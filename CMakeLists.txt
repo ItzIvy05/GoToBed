@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
-set(NAME "ExamplePlugin" CACHE STRING "")
-set(VERSION 1.0.0 CACHE STRING "")
+set(NAME "gotobed" CACHE STRING "")
+set(VERSION 3.0.0 CACHE STRING "")
 set(RUNTIME "SE" CACHE STRING "")
 
 option(COPY_BUILD "Copy the build output to the mods folder." TRUE)
@@ -84,8 +84,7 @@ set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
 
 add_subdirectory(${CommonLibSSEPath} CommonLibSSE)
 
-find_path(SKSE_MCP_INCLUDE_DIRS "SKSEMCP/utils.hpp")
-find_path(FLICK_API_INCLUDE_DIRS "FUCK_API.h")
+find_package(nlohmann_json CONFIG REQUIRED)
 
 file(GLOB_RECURSE headers CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h)
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
@@ -132,14 +131,13 @@ target_include_directories(
 	PRIVATE
 		${CMAKE_CURRENT_BINARY_DIR}/include
 		${CMAKE_CURRENT_SOURCE_DIR}/src
-		${SKSE_MCP_INCLUDE_DIRS}
-		${FLICK_API_INCLUDE_DIRS}
 )
 
 target_link_libraries(
 	${PROJECT_NAME}
 	PRIVATE
 		CommonLibSSE::CommonLibSSE
+		nlohmann_json::nlohmann_json
 )
 
 target_precompile_headers(

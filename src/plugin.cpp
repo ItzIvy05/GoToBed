@@ -1,6 +1,10 @@
+#include "init.h"
+#include "SneakFix.h"
+
 namespace {
     void OnMessage(SKSE::MessagingInterface::Message* a_message) {
         if (a_message->type == SKSE::MessagingInterface::kDataLoaded) {
+            SneakFix::Install();
         }
     }
 }
@@ -34,7 +38,8 @@ SKSE_PLUGIN_QUERY(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info) 
 #endif
 
 SKSE_PLUGIN_LOAD(const SKSE::LoadInterface* a_skse) {
-    SKSE::Init(a_skse);
+    SKSE::Init(a_skse, {.trampoline = true, .trampolineSize = 14});
+    Gotobed::Init();
     SKSE::GetMessagingInterface()->RegisterListener(OnMessage);
     return true;
 }
