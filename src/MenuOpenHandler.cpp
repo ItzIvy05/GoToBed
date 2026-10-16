@@ -5,11 +5,17 @@
 namespace Gotobed {
     namespace {
         constexpr std::size_t CAN_PROCESS_INDEX = 1;
-#ifdef SKYRIM_SUPPORT_AE
-        constexpr std::size_t PROCESS_BUTTON_INDEX = 7;
-#else
-        constexpr std::size_t PROCESS_BUTTON_INDEX = 5;
-#endif
+
+        template <class T = RE::MenuEventHandler>
+        constexpr std::size_t GetProcessButtonIndex() {
+            if constexpr (requires { &T::ProcessMotionGesture; }) {
+                return 7;
+            } else {
+                return 5;
+            }
+        }
+
+        constexpr std::size_t PROCESS_BUTTON_INDEX = GetProcessButtonIndex();
 
         std::uintptr_t canProcessOrig = 0;
         std::uintptr_t processButtonOrig = 0;
@@ -130,6 +136,10 @@ namespace Gotobed {
             }
         }
 
+        return TryOpenSleepMenu();
+    }
+
+    bool MenuOpenHandler::TryOpenSleepMenu() {
         auto ui = RE::UI::GetSingleton();
 
         if (ui->GameIsPaused() || ui->IsMenuOpen(RE::FaderMenu::MENU_NAME)) {
@@ -162,6 +172,10 @@ namespace Gotobed {
             }
         }
 
+        return TryOpenServeTimeQuestion();
+    }
+
+    bool MenuOpenHandler::TryOpenServeTimeQuestion() {
         auto ui = RE::UI::GetSingleton();
 
         if (ui->GameIsPaused() || ui->IsMenuOpen(RE::FaderMenu::MENU_NAME)) {

@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+*build/
+*buildae/
+*buildae1170/
+*.vs/

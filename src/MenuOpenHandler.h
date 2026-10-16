@@ -9,6 +9,8 @@ namespace Gotobed {
         bool OnSleepButtonDown();
         bool OnServeTimeButtonDown();
 
+        static bool TryOpenSleepMenu();
+        static bool TryOpenServeTimeQuestion();
         static void InstallHooks();
     };
 }

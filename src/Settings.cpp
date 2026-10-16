@@ -49,6 +49,14 @@ namespace Gotobed {
         a_json.at("multipleMarkersReservation").get_to(a_fixes.multipleMarkersReservation);
     }
 
+    void to_json(json& a_json, Settings::Features const& a_features) {
+        a_json["autoSleepMenu"] = a_features.autoSleepMenu;
+    }
+
+    void from_json(json const& a_json, Settings::Features& a_features) {
+        a_features.autoSleepMenu = a_json.value("autoSleepMenu", a_features.autoSleepMenu);
+    }
+
     void to_json(json& a_json, Settings::Keys const& a_keys) {
         a_json["sleep"] = a_keys.sleep;
         a_json["sleepMod"] = a_keys.sleepMod;
@@ -65,11 +73,16 @@ namespace Gotobed {
 
     void to_json(json& a_json, Settings const& a_settings) {
         a_json["fixes"] = a_settings.fixes;
+        a_json["features"] = a_settings.features;
         a_json["keys"] = a_settings.keys;
     }
 
     void from_json(json const& a_json, Settings& a_settings) {
         a_json.at("fixes").get_to(a_settings.fixes);
         a_json.at("keys").get_to(a_settings.keys);
+
+        if (a_json.contains("features")) {
+            a_json.at("features").get_to(a_settings.features);
+        }
     }
 }

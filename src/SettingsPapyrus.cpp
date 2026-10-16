@@ -47,8 +47,20 @@ namespace Gotobed::SettingsPapyrus {
         settings.keys.serveTimeMod = a_key;
     }
 
+    bool Features_GetAutoSleepMenu(RE::StaticFunctionTag*) {
+        auto& settings = Settings::Get();
+        return settings.features.autoSleepMenu;
+    }
+
+    void Features_SetAutoSleepMenu(RE::StaticFunctionTag*, bool a_enabled) {
+        auto& settings = Settings::Get();
+        settings.features.autoSleepMenu = a_enabled;
+    }
+
     bool RegisterFunctions(RE::BSScript::IVirtualMachine* a_vm) {
         a_vm->RegisterFunction("Write", "GTB_Settings", Write);
+        a_vm->RegisterFunction("Features_GetAutoSleepMenu", "GTB_Settings", Features_GetAutoSleepMenu);
+        a_vm->RegisterFunction("Features_SetAutoSleepMenu", "GTB_Settings", Features_SetAutoSleepMenu);
         a_vm->RegisterFunction("Keys_GetSleepKey", "GTB_Settings", Keys_GetSleepKey);
         a_vm->RegisterFunction("Keys_SetSleepKey", "GTB_Settings", Keys_SetSleepKey);
         a_vm->RegisterFunction("Keys_GetSleepModKey", "GTB_Settings", Keys_GetSleepModKey);

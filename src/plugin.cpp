@@ -1,3 +1,4 @@
+#include "AutoSleepMenu.h"
 #include "init.h"
 #include "SneakFix.h"
 
@@ -5,6 +6,7 @@ namespace {
     void OnMessage(SKSE::MessagingInterface::Message* a_message) {
         if (a_message->type == SKSE::MessagingInterface::kDataLoaded) {
             SneakFix::Install();
+            Gotobed::AutoSleepMenu::Install();
         }
     }
 }
