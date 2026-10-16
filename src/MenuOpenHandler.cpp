@@ -1,11 +1,19 @@
 #include "MenuOpenHandler.h"
 
-#include "Offsets.h"
-#include "Patch.h"
 #include "Settings.h"
 
 namespace Gotobed {
     namespace {
+        constexpr std::size_t CAN_PROCESS_INDEX = 1;
+#ifdef SKYRIM_SUPPORT_AE
+        constexpr std::size_t PROCESS_BUTTON_INDEX = 7;
+#else
+        constexpr std::size_t PROCESS_BUTTON_INDEX = 5;
+#endif
+
+        std::uintptr_t canProcessOrig = 0;
+        std::uintptr_t processButtonOrig = 0;
+
         std::uint32_t GetGamepadKeyCode(std::uint32_t a_idCode) {
             static std::unordered_map<std::uint32_t, std::uint32_t> map{
                 {0x0001, 266},  // dpad up
@@ -77,7 +85,7 @@ namespace Gotobed {
 
     bool MenuOpenHandler::CanProcess_Orig(RE::InputEvent* a_event) {
         using func_t = decltype(&MenuOpenHandler::CanProcess_Orig);
-        REL::Relocation<func_t> func{Offsets::MenuOpenHandler::CanProcess};
+        REL::Relocation<func_t> func{canProcessOrig};
         return func(this, a_event);
     }
 
@@ -93,7 +101,7 @@ namespace Gotobed {
 
     bool MenuOpenHandler::ProcessButton_Orig(RE::ButtonEvent* a_event) {
         using func_t = decltype(&MenuOpenHandler::ProcessButton_Orig);
-        REL::Relocation<func_t> func{Offsets::MenuOpenHandler::ProcessButton};
+        REL::Relocation<func_t> func{processButtonOrig};
         return func(this, a_event);
     }
 
@@ -177,7 +185,7 @@ namespace Gotobed {
 
     void MenuOpenHandler::InstallHooks() {
         REL::Relocation<std::uintptr_t> vtbl{RE::VTABLE_MenuOpenHandler[0]};
-        vtbl.write_vfunc(Patch::FindVfuncSlot("MenuOpenHandler::CanProcess", vtbl.address(), Offsets::MenuOpenHandler::CanProcess.address()), &MenuOpenHandler::CanProcess_Hook);
-        vtbl.write_vfunc(Patch::FindVfuncSlot("MenuOpenHandler::ProcessButton", vtbl.address(), Offsets::MenuOpenHandler::ProcessButton.address()), &MenuOpenHandler::ProcessButton_Hook);
+        canProcessOrig = vtbl.write_vfunc(CAN_PROCESS_INDEX, &MenuOpenHandler::CanProcess_Hook);
+        processButtonOrig = vtbl.write_vfunc(PROCESS_BUTTON_INDEX, &MenuOpenHandler::ProcessButton_Hook);
     }
 }

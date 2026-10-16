@@ -2,7 +2,6 @@
 
 namespace Gotobed::Patch {
     constexpr std::size_t SCAN_RANGE = 0x800;
-    constexpr std::size_t VTABLE_RANGE = 16;
 
     template <REX::TStaticString S>
     std::uintptr_t FindUnique(std::string_view a_name, std::uintptr_t a_func) {
@@ -56,15 +55,7 @@ namespace Gotobed::Patch {
         return found;
     }
 
-    inline std::size_t FindVfuncSlot(std::string_view a_name, std::uintptr_t a_vtbl, std::uintptr_t a_func) {
-        for (std::size_t i = 0; i < VTABLE_RANGE; ++i) {
-            if (*reinterpret_cast<const std::uintptr_t*>(a_vtbl + sizeof(void*) * i) == a_func) {
-                return i;
-            }
-        }
-
-        REX::FAIL("{}: function not found in the first {} vtable slots. This game version is not supported.", a_name, VTABLE_RANGE);
-
-        return 0;
+    inline std::uintptr_t GetVfunc(std::uintptr_t a_vtbl, std::size_t a_idx) {
+        return *reinterpret_cast<const std::uintptr_t*>(a_vtbl + sizeof(void*) * a_idx);
     }
 }
